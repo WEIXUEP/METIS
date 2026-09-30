@@ -10,11 +10,13 @@ set(CMAKE_POSITION_INDEPENDENT_CODE ON)
 # queue ops (instantiated in libmetis/gklib.c) across translation units.
 include(CheckIPOSupported)
 check_ipo_supported(RESULT METIS_IPO_SUPPORTED OUTPUT METIS_IPO_MSG)
-if(METIS_IPO_SUPPORTED)
+option(METIS_ENABLE_IPO
+  "Enable interprocedural optimization for the METIS library" ON)
+if(METIS_IPO_SUPPORTED AND METIS_ENABLE_IPO)
   set(CMAKE_INTERPROCEDURAL_OPTIMIZATION TRUE)
   message(STATUS "METIS: interprocedural optimization (LTO) enabled")
 else()
-  message(STATUS "METIS: IPO/LTO not supported: ${METIS_IPO_MSG}")
+  message(STATUS "METIS: IPO/LTO disabled${METIS_IPO_MSG}")
 endif()
 set(SHARED FALSE CACHE BOOL "build a shared library")
 
