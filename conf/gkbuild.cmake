@@ -122,22 +122,9 @@ endif(HAVE_GETLINE)
 
 # Custom check for TLS.
 if(MSVC)
+  # Match GKlib's TLS declaration for gk_jbufs and allocator state. A plain
+  # extern would point into the image instead of the per-thread TLS block.
   set(GK_COPTIONS "${GK_COPTIONS} -D__thread=__declspec(thread)")
-
-  # This if checks if that value is cached or not.
-  if("${HAVE_THREADLOCALSTORAGE}" MATCHES "^${HAVE_THREADLOCALSTORAGE}$")
-    try_compile(HAVE_THREADLOCALSTORAGE
-      ${CMAKE_BINARY_DIR}
-      ${CMAKE_SOURCE_DIR}/conf/check_thread_storage.c)
-    if(HAVE_THREADLOCALSTORAGE)
-      message(STATUS "checking for thread-local storage - found")
-    else()
-      message(STATUS "checking for thread-local storage - not found")
-    endif()
-  endif()
-  if(NOT HAVE_THREADLOCALSTORAGE)
-    set(GK_COPTIONS "${GK_COPTIONS} -D__thread=")
-  endif()
 endif()
 
 # Finally set the official C flags.
